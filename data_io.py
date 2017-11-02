@@ -39,7 +39,7 @@ def get_texture_iter(folder, npx=128, batch_size=64, \
     for f in files:
         name = folder + f
         try:
-            img = Image.open(name)
+            img = Image.open(name).convert('RGB')
             imTex += [image_to_tensor(img)]
             if mirror:
                 img = img.transpose(FLIP_LEFT_RIGHT)
