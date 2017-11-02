@@ -372,20 +372,23 @@ if __name__=="__main__":
         Dcost = []
 
         iters = c.epoch_iters / c.batch_size
-        for it, samples in enumerate(tqdm(c.data_iter(), total=iters)):
-            if it >= iters:
-                break
-            tot_iter+=1
+        with tqdm(total=iters) as pbar:            
+            for it, samples in enumerate(c.data_iter()):
+                if it >= iters:
+                    break
+                tot_iter+=1
 
-            # random samples for training
-            Znp = sample_noise_tensor(c,c.batch_size,c.zx) 
+                # random samples for training
+                Znp = sample_noise_tensor(c,c.batch_size,c.zx) 
 
-            if tot_iter % (c.k+1) == 0:
-                cost = psgan.train_g(Znp)
-                Gcost.append(cost)
-            else:
-                cost = psgan.train_d(samples,Znp)
-                Dcost.append(cost)
+                if tot_iter % (c.k+1) == 0:
+                    cost = psgan.train_g(Znp)
+                    Gcost.append(cost)
+                else:
+                    cost = psgan.train_d(samples,Znp)
+                    Dcost.append(cost)
+
+                pbar.update(1)
 
         print "Gcost=", np.mean(Gcost), "  Dcost=", np.mean(Dcost)
 
